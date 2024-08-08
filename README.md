@@ -1,1 +1,1 @@
-This is a websire for Andi's meritb badge
+This is a websire for Andi's merit badge
