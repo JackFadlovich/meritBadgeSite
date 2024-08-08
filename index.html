@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merit Badge Content Creator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea, input[type="file"] {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .content-container {
+            margin-top: 20px;
+        }
+        .post {
+            display: flex;
+            align-items: flex-start;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+        .post .image-container {
+            flex: 1 1 50%; /* Image container takes up 50% of the width */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .post .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        .post .text {
+            flex: 1 1 50%; /* Text container takes up the other 50% of the width */
+            padding: 10px;
+            font-size: 1.8em; /* Increase font size */
+            overflow-wrap: break-word; /* Ensure text wraps within its container */
+        }
+    </style>
+</head>
+<body>
+    <h1>Communication Merit Badge</h1>
+    <p>Write your paragraph and/or add an image from your computer below, then click "Add Content" to display it.</p>
+    
+    <textarea id="paragraphInput" placeholder="Write your paragraph here..."></textarea>
+    <!-- File input for image upload -->
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="addContent()">Add Content</button>
+
+    <div class="content-container" id="contentContainer"></div>
+
+    <script>
+        function addContent() {
+            const paragraphText = document.getElementById('paragraphInput').value;
+            const imageInput = document.getElementById('imageInput');
+            const contentContainer = document.getElementById('contentContainer');
+
+            if (paragraphText.trim() === '' && !imageInput.files[0]) {
+                alert('Please write something or choose an image before adding content.');
+                return;
+            }
+
+            const post = document.createElement('div');
+            post.className = 'post';
+
+            if (paragraphText.trim() !== '') {
+                const newText = document.createElement('div');
+                newText.className = 'text';
+                newText.textContent = paragraphText;
+                post.appendChild(newText);
+                document.getElementById('paragraphInput').value = '';
+            }
+
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newImageContainer = document.createElement('div');
+                    newImageContainer.className = 'image-container';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = "Selected Image";
+                    newImageContainer.appendChild(img);
+
+                    post.appendChild(newImageContainer);
+                }
+                reader.readAsDataURL(imageInput.files[0]);
+                imageInput.value = '';
+            }
+
+            contentContainer.appendChild(post);
+        }
+    </script>
+</body>
+</html>

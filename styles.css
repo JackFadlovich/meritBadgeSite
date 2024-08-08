@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+textarea, input[type="file"] {
+    width: 100%;
+    margin-bottom: 10px;
+}
+.content-container {
+    margin-top: 20px;
+}
+.post {
+    display: flex;
+    align-items: flex-start;
+    background-color: #f4f4f4;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+.post .image-container {
+    flex: 1 1 50%; /* Allows the image container to take up 50% of the width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.post .image-container img {
+    max-width: 100%;
+    height: auto;
+}
+.post .text {
+    flex: 1 1 50%; /* Allows the text container to take up the other 50% of the width */
+    padding: 10px;
+}
