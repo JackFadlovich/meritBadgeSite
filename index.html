@@ -37,13 +37,13 @@
         .post .text {
             flex: 1 1 50%; /* Text container takes up the other 50% of the width */
             padding: 10px;
-            font-size: 1.8em; /* Increase font size */
+            font-size: 1.5em; /* Increase font size */
             overflow-wrap: break-word; /* Ensure text wraps within its container */
         }
     </style>
 </head>
 <body>
-    <h1>Communication Merit Badge</h1>
+    <h1>Merit Badge Content Creator</h1>
     <p>Write your paragraph and/or add an image from your computer below, then click "Add Content" to display it.</p>
     
     <textarea id="paragraphInput" placeholder="Write your paragraph here..."></textarea>
@@ -54,6 +54,11 @@
     <div class="content-container" id="contentContainer"></div>
 
     <script>
+        // Load saved content from localStorage when the page loads
+        window.onload = function() {
+            loadContent();
+        };
+
         function addContent() {
             const paragraphText = document.getElementById('paragraphInput').value;
             const imageInput = document.getElementById('imageInput');
@@ -67,11 +72,14 @@
             const post = document.createElement('div');
             post.className = 'post';
 
+            let postData = {};
+
             if (paragraphText.trim() !== '') {
                 const newText = document.createElement('div');
                 newText.className = 'text';
                 newText.textContent = paragraphText;
                 post.appendChild(newText);
+                postData.text = paragraphText;
                 document.getElementById('paragraphInput').value = '';
             }
 
@@ -87,12 +95,54 @@
                     newImageContainer.appendChild(img);
 
                     post.appendChild(newImageContainer);
+                    postData.image = e.target.result;
+
+                    savePost(postData);
                 }
                 reader.readAsDataURL(imageInput.files[0]);
                 imageInput.value = '';
+            } else {
+                savePost(postData);
             }
 
             contentContainer.appendChild(post);
+        }
+
+        function savePost(postData) {
+            let savedPosts = JSON.parse(localStorage.getItem('posts')) || [];
+            savedPosts.push(postData);
+            localStorage.setItem('posts', JSON.stringify(savedPosts));
+        }
+
+        function loadContent() {
+            const contentContainer = document.getElementById('contentContainer');
+            const savedPosts = JSON.parse(localStorage.getItem('posts')) || [];
+
+            savedPosts.forEach(postData => {
+                const post = document.createElement('div');
+                post.className = 'post';
+
+                if (postData.text) {
+                    const newText = document.createElement('div');
+                    newText.className = 'text';
+                    newText.textContent = postData.text;
+                    post.appendChild(newText);
+                }
+
+                if (postData.image) {
+                    const newImageContainer = document.createElement('div');
+                    newImageContainer.className = 'image-container';
+
+                    const img = document.createElement('img');
+                    img.src = postData.image;
+                    img.alt = "Saved Image";
+                    newImageContainer.appendChild(img);
+
+                    post.appendChild(newImageContainer);
+                }
+
+                contentContainer.appendChild(post);
+            });
         }
     </script>
 </body>
