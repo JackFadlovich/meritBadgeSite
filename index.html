@@ -23,6 +23,7 @@
             padding: 10px;
             border: 1px solid #ddd;
             margin-bottom: 10px;
+            position: relative;
         }
         .post .image-container {
             flex: 1 1 50%; /* Image container takes up 50% of the width */
@@ -40,6 +41,16 @@
             font-size: 1.5em; /* Increase font size */
             overflow-wrap: break-word; /* Ensure text wraps within its container */
         }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -47,7 +58,6 @@
     <p>Write your paragraph and/or add an image from your computer below, then click "Add Content" to display it.</p>
     
     <textarea id="paragraphInput" placeholder="Write your paragraph here..."></textarea>
-    <!-- File input for image upload -->
     <input type="file" id="imageInput" accept="image/*">
     <button onclick="addContent()">Add Content</button>
 
@@ -106,6 +116,9 @@
             }
 
             contentContainer.appendChild(post);
+
+            // Add delete button
+            addDeleteButton(post, postData);
         }
 
         function savePost(postData) {
@@ -118,7 +131,7 @@
             const contentContainer = document.getElementById('contentContainer');
             const savedPosts = JSON.parse(localStorage.getItem('posts')) || [];
 
-            savedPosts.forEach(postData => {
+            savedPosts.forEach((postData, index) => {
                 const post = document.createElement('div');
                 post.className = 'post';
 
@@ -142,7 +155,33 @@
                 }
 
                 contentContainer.appendChild(post);
+
+                // Add delete button
+                addDeleteButton(post, postData, index);
             });
+        }
+
+        function addDeleteButton(post, postData, index) {
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-btn';
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = function() {
+                deletePost(post, index);
+            };
+            post.appendChild(deleteButton);
+        }
+
+        function deletePost(postElement, index) {
+            const contentContainer = document.getElementById('contentContainer');
+            contentContainer.removeChild(postElement);
+
+            let savedPosts = JSON.parse(localStorage.getItem('posts')) || [];
+            savedPosts.splice(index, 1);
+            localStorage.setItem('posts', JSON.stringify(savedPosts));
+
+            // Reload content to update indices
+            contentContainer.innerHTML = '';
+            loadContent();
         }
     </script>
 </body>
